@@ -86,14 +86,14 @@
       var ship = new battleship.Ship(5);
       var board = new battleship.Board();
 
-      expect(function () { board.addShip(ship, [0,0], [0,4]); }).not.toThrow();
+      expect(function () { board.addShip(ship, [[0,0], [0,4]]); }).not.toThrow();
 
     });
     describe("Ensure all occupied squares are filled", function () {
       it("should fill squares for vertical shipts", function() {
       var ship = new battleship.Ship(5);
       var board = new battleship.Board();
-      board.addShip(ship, [0,0], [0,4]); 
+      board.addShip(ship, [[0,0], [0,4]]); 
 
       expect(board.map[0][0].ship).toEqual(ship);
       expect(board.map[0][1].ship).toEqual(ship);
@@ -105,7 +105,7 @@
       it("should fill squares for horizontal shipts", function() {
       var ship = new battleship.Ship(5);
       var board = new battleship.Board();
-      board.addShip(ship, [0,0], [4,0]); 
+      board.addShip(ship, [[0,0], [4,0]]); 
 
       expect(board.map[0][0].ship).toEqual(ship);
       expect(board.map[1][0].ship).toEqual(ship);
@@ -118,7 +118,7 @@
     it("should register hits for horizontal boats", function () {
       var ship = new battleship.Ship(5);
       var board = new battleship.Board();
-      board.addShip(ship, [0,0], [0,4]); 
+      board.addShip(ship, [[0,0], [0,4]]); 
       board.attack([0,0]);
 
       expect(ship.spots[0]).toBeTruthy();
@@ -127,7 +127,7 @@
     it("should register hits for vertical boats", function () {
       var ship = new battleship.Ship(5);
       var board = new battleship.Board();
-      board.addShip(ship, [0,0], [4,0]); 
+      board.addShip(ship, [[0,0], [4,0]]); 
       board.attack([0,0]);
 
       expect(ship.spots[0]).toBeTruthy();
@@ -139,7 +139,7 @@
     it("should report when all ships are destroyed", function() {
       var ship = new battleship.Ship(5);
       var board = new battleship.Board();
-      board.addShip(ship, [2,2], [2,6]); 
+      board.addShip(ship, [[2,2], [2,6]]); 
       board.attack([2,2]);
       board.attack([2,3]);
       board.attack([2,4]);
@@ -155,26 +155,58 @@
         var ship = new battleship.Ship(4);
         var board = new battleship.Board();
         
-        expect(function () { board.addShip(ship, [11,0], [15,0]); }).toThrow();  
-        expect(function () { board.addShip(ship, [7,0], [11,0]); }).toThrow();  
-        expect(function () { board.addShip(ship, [0,4], [0,0]); }).toThrow();  
+        expect(function () { board.addShip(ship, [[11,0], [15,0]]); }).toThrow();  
+        expect(function () { board.addShip(ship, [[7,0], [11,0]]); }).toThrow();  
+        expect(function () { board.addShip(ship, [[0,4], [0,0]]); }).toThrow();  
 
       });
       it("should not accept positions sized different than the ship", function() {
         var ship = new battleship.Ship(4);
         var board = new battleship.Board();
         
-        expect(function () { board.addShip(ship, [4,4], [4,6]); }).toThrow();  
+        expect(function () { board.addShip(ship, [[4,4], [4,6]]); }).toThrow();  
       });
       it("should not let ships overlap", function () {
         var ship1 = new battleship.Ship(4);
         var ship2 = new battleship.Ship(4);
         var board = new battleship.Board();
-        board.addShip(ship1, [2,4], [2,7]);
+        board.addShip(ship1, [[2,4], [2,7]]);
 
-        expect(function () { board.addShip(ship2, [1,5], [4,5]); }).toThrow();  
+        expect(function () { board.addShip(ship2, [[1,5], [4,5]]); }).toThrow();  
   
       });
+    });
+  });
+  describe("Creation functions", function () {
+    it("should create random number", function() {
+      var random = battleship.getRandomInt(0, 10);
+      expect(random).toBeGreaterThan(-1);
+      expect(random).toBeLessThan(10);
+    });
+    it("should create arrays for ship placement", function() {
+      var placement = battleship.createRandomShipPlacement(5);
+      expect(placement instanceof Array).toBeTruthy;
+      expect(placement[0] instanceof Array).toBeTruthy;
+      expect(placement[1] instanceof Array).toBeTruthy;
+    });
+    it("should create valid ship placements (100 times)", function () {
+      var i = 0, board, ship, placement, shipSize;
+      for (i=0; i<100; i += 1) {
+        board = new battleship.Board();
+        shipSize = battleship.getRandomInt(2,6);
+        ship = new battleship.Ship(shipSize);
+        var placement = battleship.createRandomShipPlacement(shipSize);
+
+        expect(function () { board.addShip(ship, placement); }).not.toThrow();
+      }
+    });
+  });
+  describe("Opponent", function() {
+    it("board should be created", function() {
+      expect(battleship.opponent).toBeDefined();
+    });
+    it("board should have 5 ships", function() {
+      expect(battleship.opponent.ships.length).toBe(5);
     });
   });
 }());

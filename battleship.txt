@@ -21,6 +21,11 @@ while (!opponent.defeated) {
 	opponent.attack();
 }
 
+each square {
+	pointer to a Ship
+	position on that ship
+}
+
 
 ships:
 
