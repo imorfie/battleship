@@ -1,6 +1,6 @@
-/*global tddjs*/
+/*global battleship*/
 
-tddjs.namespace("battleship");
+var battleship = battleship || {};
 (function () {
   "use strict";
 
@@ -95,14 +95,14 @@ tddjs.namespace("battleship");
     // Check if a ship is occupying any spaces:
     if (start[0] === end[0] && hlen === ship.length) {
       for (i = start[1]; i <= end[1]; i += 1) {
-        if(this.map[start[0]][i].ship) {
-          throw new Error ("Overlapping ships not allowed");
+        if (this.map[start[0]][i].ship) {
+          throw new Error("Overlapping ships not allowed");
         }
       }
     } else if (start[1] === end[1] && vlen === ship.length) {
       for (i = start[0]; i <= end[0]; i += 1) {
-        if(this.map[i][start[1]].ship) {
-          throw new Error ("Overlapping ships not allowed");
+        if (this.map[i][start[1]].ship) {
+          throw new Error("Overlapping ships not allowed");
         }
       }
     }
@@ -126,7 +126,7 @@ tddjs.namespace("battleship");
   };
   Board.prototype.gameOver = function () {
     var i;
-    for ( i = 0; i < this.ships.length; i += 1) {
+    for (i = 0; i < this.ships.length; i += 1) {
       if (!this.ships[i].isSunk()) {
         return false;
       }
@@ -134,9 +134,9 @@ tddjs.namespace("battleship");
     return true;
   };
 
-  tddjs.battleship.Ship = Ship;
-  tddjs.battleship.Square = Square;
-  tddjs.battleship.Board = Board;
+  battleship.Ship = Ship;
+  battleship.Square = Square;
+  battleship.Board = Board;
 
 }());
 
