@@ -81,6 +81,42 @@
       });
     });
   });
+  describe("Board", function() {
+    it("should accept ship and location", function() {
+      var ship = new tddjs.battleship.Ship(4);
+      var board = new tddjs.battleship.Board();
+
+      expect(function () { board.addShip(ship, [0,0], [0,4]); }).not.toThrow();
+
+    });
+    it("should register hits for horizontal boats", function () {
+      var ship = new tddjs.battleship.Ship(4);
+      var board = new tddjs.battleship.Board();
+      board.addShip(ship, [0,0], [0,4]); 
+      board.attack([0,0]);
+
+      expect(ship.spots[0]).toBeTruthy();
+
+    });
+    it("should register hits for vertical boats", function () {
+      var ship = new tddjs.battleship.Ship(4);
+      var board = new tddjs.battleship.Board();
+      board.addShip(ship, [0,0], [4,0]); 
+      board.attack([0,0]);
+
+      expect(ship.spots[0]).toBeTruthy();
+
+    });
+    describe("Error Handling", function() {
+      it("should not accept positions out of range", function () {
+        var ship = new tddjs.battleship.Ship(4);
+        var board = new tddjs.battleship.Board();
+        
+        expect(board.addShip(ship, [11,0], [15,0])).toThrow();  
+
+      });
+    });
+  });
 }());
 
 
