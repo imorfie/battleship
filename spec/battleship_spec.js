@@ -112,8 +112,16 @@
         var ship = new tddjs.battleship.Ship(4);
         var board = new tddjs.battleship.Board();
         
-        expect(board.addShip(ship, [11,0], [15,0])).toThrow();  
+        expect(function () { board.addShip(ship, [11,0], [15,0]); }).toThrow();  
+        expect(function () { board.addShip(ship, [7,0], [11,0]); }).toThrow();  
+        expect(function () { board.addShip(ship, [0,4], [0,0]); }).toThrow();  
 
+      });
+      it("should not accept positions sized different than the ship", function() {
+        var ship = new tddjs.battleship.Ship(4);
+        var board = new tddjs.battleship.Board();
+        
+        expect(function () { board.addShip(ship, [4,4], [4,6]); }).toThrow();  
       });
     });
   });

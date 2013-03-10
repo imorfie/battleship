@@ -72,19 +72,37 @@ tddjs.namespace("battleship");
   }
 
   Board.prototype.addShip = function (ship, start, end) {
-    var i, count = 0;
-    this.ships.push(ship);
-    if (start[0] === end[0]) {
+    var i, vlen, hlen, count = 0;
+
+    if (
+      start[0] >= this.map.length ||
+        start[0] < 0 ||
+        start[1] >= this.map[start[0]].length ||
+        start[1] < 0 ||
+        end[0] >= this.map.length ||
+        end[0] < 0 ||
+        end[1] >= this.map[end[0]].length ||
+        end[1] < 0 ||
+        start[0] > end[0] ||
+        start[1] > end[1]
+    ) {
+      throw new Error("Invalid position");
+    }
+    vlen = end[0] - start[0];
+    hlen = end[1] - start[1];
+
+    if (start[0] === end[0] && hlen === ship.length) {
       for (i = start[0]; i <= end[0]; i += 1, count += 1) {
         this.map[start[0]][i].addShip(ship, count);
       }
-    } else if (start[1] === end[1]) {
+    } else if (start[1] === end[1] && vlen === ship.length) {
       for (i = start[1]; i <= end[1]; i += 1, count += 1) {
         this.map[i][start[1]].addShip(ship, count);
       }
     } else {
       throw new Error("Invalid position");
     }
+    this.ships.push(ship);
   };
 
   Board.prototype.attack = function (pos) {
