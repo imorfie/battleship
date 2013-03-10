@@ -83,14 +83,40 @@
   });
   describe("Board", function() {
     it("should accept ship and location", function() {
-      var ship = new tddjs.battleship.Ship(4);
+      var ship = new tddjs.battleship.Ship(5);
       var board = new tddjs.battleship.Board();
 
       expect(function () { board.addShip(ship, [0,0], [0,4]); }).not.toThrow();
 
     });
+    describe("Ensure all occupied squares are filled", function () {
+      it("should fill squares for vertical shipts", function() {
+      var ship = new tddjs.battleship.Ship(5);
+      var board = new tddjs.battleship.Board();
+      board.addShip(ship, [0,0], [0,4]); 
+
+      expect(board.map[0][0].ship).toEqual(ship);
+      expect(board.map[0][1].ship).toEqual(ship);
+      expect(board.map[0][2].ship).toEqual(ship);
+      expect(board.map[0][3].ship).toEqual(ship);
+      expect(board.map[0][4].ship).toEqual(ship);
+        
+      });
+      it("should fill squares for horizontal shipts", function() {
+      var ship = new tddjs.battleship.Ship(5);
+      var board = new tddjs.battleship.Board();
+      board.addShip(ship, [0,0], [4,0]); 
+
+      expect(board.map[0][0].ship).toEqual(ship);
+      expect(board.map[1][0].ship).toEqual(ship);
+      expect(board.map[2][0].ship).toEqual(ship);
+      expect(board.map[3][0].ship).toEqual(ship);
+      expect(board.map[4][0].ship).toEqual(ship);
+
+      });
+    });
     it("should register hits for horizontal boats", function () {
-      var ship = new tddjs.battleship.Ship(4);
+      var ship = new tddjs.battleship.Ship(5);
       var board = new tddjs.battleship.Board();
       board.addShip(ship, [0,0], [0,4]); 
       board.attack([0,0]);
@@ -99,12 +125,29 @@
 
     });
     it("should register hits for vertical boats", function () {
-      var ship = new tddjs.battleship.Ship(4);
+      var ship = new tddjs.battleship.Ship(5);
       var board = new tddjs.battleship.Board();
       board.addShip(ship, [0,0], [4,0]); 
       board.attack([0,0]);
 
       expect(ship.spots[0]).toBeTruthy();
+      board.attack([1,0]);
+      expect(ship.spots[0]).toBeTruthy();
+      expect(ship.spots[1]).toBeTruthy();
+
+    });
+    it("should report when all ships are destroyed", function() {
+      var ship = new tddjs.battleship.Ship(5);
+      var board = new tddjs.battleship.Board();
+      board.addShip(ship, [2,2], [2,6]); 
+      board.attack([2,2]);
+      board.attack([2,3]);
+      board.attack([2,4]);
+      board.attack([2,5]);
+      board.attack([2,6]);
+
+      expect(ship.isSunk()).toBeTruthy();
+      expect(board.gameOver()).toBeTruthy();
 
     });
     describe("Error Handling", function() {

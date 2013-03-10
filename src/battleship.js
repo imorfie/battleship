@@ -88,15 +88,16 @@ tddjs.namespace("battleship");
     ) {
       throw new Error("Invalid position");
     }
-    vlen = end[0] - start[0];
-    hlen = end[1] - start[1];
+    vlen = end[0] - start[0] + 1; // coordinates are inclusive
+    hlen = end[1] - start[1] + 1;
 
     if (start[0] === end[0] && hlen === ship.length) {
-      for (i = start[0]; i <= end[0]; i += 1, count += 1) {
+      for (i = start[1]; i <= end[1]; i += 1, count += 1) {
+        console.log(start[0] + ", " + i);
         this.map[start[0]][i].addShip(ship, count);
       }
     } else if (start[1] === end[1] && vlen === ship.length) {
-      for (i = start[1]; i <= end[1]; i += 1, count += 1) {
+      for (i = start[0]; i <= end[0]; i += 1, count += 1) {
         this.map[i][start[1]].addShip(ship, count);
       }
     } else {
@@ -107,6 +108,15 @@ tddjs.namespace("battleship");
 
   Board.prototype.attack = function (pos) {
     this.map[pos[0]][pos[1]].hit();
+  };
+  Board.prototype.gameOver = function () {
+    var i;
+    for ( i = 0; i < this.ships.length; i += 1) {
+      if (!this.ships[i].isSunk()) {
+        return false;
+      }
+    }
+    return true;
   };
 
   tddjs.battleship.Ship = Ship;
