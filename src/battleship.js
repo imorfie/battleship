@@ -43,7 +43,28 @@ tddjs.namespace("battleship");
     return true;
   };
 
+  function Square() {
+    this.ship = undefined;
+    this.position = undefined;
+    this.state = "open";
+  }
+
+  Square.prototype.addShip = function (ship, position) {
+    this.ship = ship;
+    this.position = position;
+  };
+
+  Square.prototype.hit = function () {
+    if (this.ship) {
+      this.ship.hit(this.position);
+      this.state = "hit";
+    } else {
+      this.state = "miss";
+    }
+  };
+
   tddjs.battleship.Ship = Ship;
+  tddjs.battleship.Square = Square;
 
 }());
 
