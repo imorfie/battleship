@@ -166,6 +166,15 @@
         
         expect(function () { board.addShip(ship, [4,4], [4,6]); }).toThrow();  
       });
+      it("should not let ships overlap", function () {
+        var ship1 = new tddjs.battleship.Ship(4);
+        var ship2 = new tddjs.battleship.Ship(4);
+        var board = new tddjs.battleship.Board();
+        board.addShip(ship1, [2,4], [2,7]);
+
+        expect(function () { board.addShip(ship2, [1,5], [4,5]); }).toThrow();  
+  
+      });
     });
   });
 }());

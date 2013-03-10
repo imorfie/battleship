@@ -88,12 +88,27 @@ tddjs.namespace("battleship");
     ) {
       throw new Error("Invalid position");
     }
+
     vlen = end[0] - start[0] + 1; // coordinates are inclusive
     hlen = end[1] - start[1] + 1;
 
+    // Check if a ship is occupying any spaces:
+    if (start[0] === end[0] && hlen === ship.length) {
+      for (i = start[1]; i <= end[1]; i += 1) {
+        if(this.map[start[0]][i].ship) {
+          throw new Error ("Overlapping ships not allowed");
+        }
+      }
+    } else if (start[1] === end[1] && vlen === ship.length) {
+      for (i = start[0]; i <= end[0]; i += 1) {
+        if(this.map[i][start[1]].ship) {
+          throw new Error ("Overlapping ships not allowed");
+        }
+      }
+    }
+
     if (start[0] === end[0] && hlen === ship.length) {
       for (i = start[1]; i <= end[1]; i += 1, count += 1) {
-        console.log(start[0] + ", " + i);
         this.map[start[0]][i].addShip(ship, count);
       }
     } else if (start[1] === end[1] && vlen === ship.length) {
