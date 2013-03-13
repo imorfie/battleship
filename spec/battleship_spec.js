@@ -89,6 +89,13 @@
       expect(function () { board.addShip(ship, [[0,0], [0,4]]); }).not.toThrow();
 
     });
+    it("should increment hit counter", function () {
+      var ship = new battleship.Ship(5);
+      var board = new battleship.Board();
+      board.addShip(ship, [[0,0], [0,4]]); 
+      board.attack([1,0]);
+      expect(board.moves).toEqual(1);
+    });
     describe("Ensure all occupied squares are filled", function () {
       it("should fill squares for vertical shipts", function() {
       var ship = new battleship.Ship(5);
