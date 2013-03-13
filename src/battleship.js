@@ -1,4 +1,4 @@
-/*global battleship*/
+/*global battleship, document, $*/
 
 var battleship = battleship || {};
 (function () {
@@ -59,13 +59,12 @@ var battleship = battleship || {};
 
   function Board() {
     this.ships = [];
-    var length = 10,
-      i,
-      j;
+    this.length = 10;
+    var i, j;
     this.map = [];
-    for (i = 0; i < length; i += 1) {
+    for (i = 0; i < this.length; i += 1) {
       this.map[i] = [];
-      for (j = 0; j < length; j += 1) {
+      for (j = 0; j < this.length; j += 1) {
         this.map[i][j] = new Square();
       }
     }
@@ -170,24 +169,52 @@ var battleship = battleship || {};
     return placement;
   };
 
-}());
-
-battleship.opponent = new battleship.Board();
-var i,
-  sizes = [2, 3, 3, 4, 5],
-  ship;
-for (i = 0; i < sizes.length; i += 1) {
-  ship = new battleship.Ship(sizes[i]);
-  while ((i + 1) > battleship.opponent.ships.length) {
-    try {
-      battleship.opponent.addShip(ship, battleship.createRandomShipPlacement(sizes[i]));
-    } catch (e) {
-      if (!e instanceof battleship.OverlapError) {
-        throw new Error("Error adding ship: " + e);
+  //initialize opponent
+  battleship.opponent = new battleship.Board();
+  var i, j,
+    sizes = [2, 3, 3, 4, 5],
+    ship;
+  for (i = 0; i < sizes.length; i += 1) {
+    ship = new battleship.Ship(sizes[i]);
+    while ((i + 1) > battleship.opponent.ships.length) {
+      try {
+        battleship.opponent.addShip(ship, battleship.createRandomShipPlacement(sizes[i]));
+      } catch (e) {
+        if (!e instanceof battleship.OverlapError) {
+          throw new Error("Error adding ship: " + e);
+        }
       }
     }
   }
-}
+  battleship.cache = {};
+  battleship.attackSquare = function () {
+    var square = battleship.cache[$(this).attr('id')];
+    square.hit();
+    $(this).html(square.state);
+  };
+}());
+
+
+$(document).ready(function () {
+  "use strict";
+  var i, j, row, cell,
+    opponentTable = $('<table>').attr('id', 'opponentTable');
+  for (i = 0; i < battleship.opponent.length; i += 1) {
+    row = $('<tr>');
+    for (j = 0; j < battleship.opponent.length; j += 1) {
+      cell = $('<td>').html(battleship.opponent.map[i][j].state);
+      cell.attr('id', String(i) + String(j));
+      cell.click(battleship.attackSquare);
+      battleship.cache[String(i) + String(j)] = battleship.opponent.map[i][j];
+      row.append(cell);
+    }
+    opponentTable.append(row);
+  }
+  $('body').append(opponentTable);
+
+
+});
+
 
 
 
